@@ -19,10 +19,28 @@ Clone this repo :neutral_face:
 $ git clone https://github.com/stelzo/keycloak-letsencrypt.git
 ```
 
-### nginx 
-Create a new nginx config for keycloak in `/etc/nginx/sites-available/` with the content of the file `example.com.conf` in this repository.
+### nginx
 
-Do not forget to replace `<your-domain>` with your domain. :neutral_face:
+Create a new nginx config for keycloak in `/etc/nginx/sites-available/<your-domain>.conf` with the following content.
+
+```
+server {
+  server_name <your-domain>;
+  allow all;
+  listen 80;
+
+  location / {
+    proxy_pass          http://localhost:8080/;
+    proxy_set_header    Host               $host;
+    proxy_set_header    X-Real-IP          $remote_addr;
+    proxy_set_header    X-Forwarded-For    $proxy_add_x_forwarded_for;
+    proxy_set_header    X-Forwarded-Host   $host;
+    proxy_set_header    X-Forwarded-Server $host;
+    proxy_set_header    X-Forwarded-Port   443;
+    proxy_set_header    X-Forwarded-Proto  https;
+  }
+}
+```
 
 Symlink your config to the enabled sites.
 ```sh
@@ -38,22 +56,19 @@ Get your certificate.
 For this to work, your domain needs to point to the server you are running this on.
 ```sh
 $ sudo certbot --nginx
-$ systemctl restart nginx
 ```
 
 ### docker-compose
 
 Take a look into the `docker-compose.yml`.
-1. You should change the postgres-data volume if you want to persist the data to your liking and... pick a safe password!
+1. Change the postgres-data volume if you want to persist the data to somewhere else and... pick a safe password!
 2. Create your admin account with `KEYCLOAK_USER` and `KEYCLOAK_PASSWORD` environment variables.
 3. Mount the `standalone.xml` from this repository by changing the first path (host path) `/opt/security/standalone.xml`.
 4. Start the container. `docker-compose up -d`.
 
-You are ready to go! Visit `https://yourdomain.com/`.
+You are ready to go! Visit `https://<your-domain>/`.
 
-If you want to import a realm on startup, you can mount your realm.json somewhere and set the path (in the container) with environment `KEYCLOAK_IMPORT=<your-realm-path>.json`. Then add `-Dkeycloak.profile.feature.upload_scripts=enabled` to the commands.
-
-You can restart your Keycloak server with `docker-compose -f /opt/security/docker-compose.yml restart keycloak`.
+You can restart your Keycloak server with `docker-compose -f /path/to/docker-compose.yml restart keycloak`.
 
 ### management account
 
