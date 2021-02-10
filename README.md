@@ -38,7 +38,7 @@ If you like to restart your keycloak server, this would be `docker-compose -f /o
 ### nginx 
 Create a new nginx config for keycloak in `/etc/nginx/sites-available/` with the content of the file `example.com.conf` in this repository.
 
-Do not forget to replace `<your-domain>` with your domain. :neutral:
+Do not forget to replace `<your-domain>` with your domain. :neutral_face:
 
 Check if you made any mistakes and start nginx.
 
