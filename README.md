@@ -40,9 +40,7 @@ Create a new nginx config for keycloak in `/etc/nginx/sites-available/` with the
 
 Do not forget to replace `<your-domain>` with your domain. :neutral_face:
 
-Check if you made any mistakes and start nginx.
-
-Start nginx again `systemctl start nginx`.
+Check if you made any mistakes `nginx -t` and start nginx again `systemctl start nginx`.
 
 Nginx is now ready to proxy every request to your domain to port 8080 on your machine.
 
@@ -60,7 +58,7 @@ If you want to import a realm on startup, you can mount your realm.json somewher
 
 ### management account
 
-The WildFly (Application Server Keycloak runs on) management console does not currently work with the nginx proxy (as seen in the article) but it starts on port 9990 on your machine if you need it. It is only http though. You can help fixing it. :wink:
+The WildFly (Application Server Keycloak runs on) management console does not currently work with the nginx proxy (as seen in the article) but it starts on port 9990 on your machine if you need it. It is only http though.
 
 Add an account.
 ```sh
