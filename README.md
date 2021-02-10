@@ -11,7 +11,7 @@ You need
 - certbot
 - nginx
 
-This is basically a dockerized version of [this article!](https://www.datamate.org/installation-keycloak-sso-ubuntu-18-04/). Many thanks to Christoph Dyllick-Brenzinger!
+This is basically a dockerized version of [this article](https://www.datamate.org/installation-keycloak-sso-ubuntu-18-04/). Many thanks to Christoph Dyllick-Brenzinger!
 
 ## Setup
 Clone this repo :neutral_face:
