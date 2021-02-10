@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres
+    container_name: keycloak_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: cHaNgEmE!11
+    volumes: 
+      - /opt/security/pg-data:/var/lib/postgresql/data # persist data
+
+  keycloak:
+    image: jboss/keycloak:12.0.2 # standalone.xml comes from this version, changing it may break it.
+    container_name: keycloak
+    restart: always
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: cHaNgEmE!11
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: cHaNgEmE!11
+      PROXY_ADDRESS_FORWARDING: "true"
+      REDIRECT_SOCKET: "proxy-https"
+    ports:
+      - 8080:8080 # http nginx
+      - 9990:9990 # wildfly management console
+    volumes:
+      - /opt/security/standalone.xml:/opt/jboss/keycloak/standalone/configuration/standalone.xml
+      - /opt/security/share:/opt/jboss/keycloak/share # optional for exchanging files
+    depends_on:
+      - postgres
+    command: ["-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]
