@@ -16,7 +16,7 @@ This is basically a dockerized version of [this article!](https://www.datamate.o
 ## Setup
 Clone this repo :neutral_face:
 ```sh
-$ git clone <repo>
+$ git clone https://github.com/stelzo/keycloak-letsencrypt.git
 ```
 
 ### Let’s Encrypt/certbot
