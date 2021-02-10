@@ -70,7 +70,7 @@ You are ready to go! Visit `https://<your-domain>/`.
 
 You can restart your Keycloak server with `docker-compose -f /path/to/docker-compose.yml restart keycloak`.
 
-### management account
+### Management Console
 
 The WildFly (Application Server Keycloak runs on) management console does not currently work with the nginx proxy (as seen in the article) but it starts on port 9990 on your machine if you need it. It is only http though.
 
