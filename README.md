@@ -47,7 +47,7 @@ Symlink your config to the enabled sites.
 $ sudo ln -s /etc/nginx/sites-available/<your-domain>.conf /etc/nginx/sites-enabled/<your-domain>.conf
 ```
 
-Check if you made any mistakes with `nginx -t`.
+Check if you made any mistakes with `nginx -t` and restart `sudo service nginx restart`.
 
 ### Let’s Encrypt/certbot
 If you don't have certbot yet, [install it](https://certbot.eff.org/).
