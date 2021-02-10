@@ -19,23 +19,27 @@ Clone this repo :neutral_face:
 $ git clone https://github.com/stelzo/keycloak-letsencrypt.git
 ```
 
+### nginx 
+Create a new nginx config for keycloak in `/etc/nginx/sites-available/` with the content of the file `example.com.conf` in this repository.
+
+Do not forget to replace `<your-domain>` with your domain. :neutral_face:
+
+Symlink your config to the enabled sites.
+```sh
+$ sudo ln -s /etc/nginx/sites-available/<your-domain>.conf /etc/nginx/sites-enabled/<your-domain>.conf
+```
+
+Check if you made any mistakes with `nginx -t`.
+
 ### Let’s Encrypt/certbot
 If you don't have certbot yet, [install it](https://certbot.eff.org/).
 
 Get your certificate.
 For this to work, your domain needs to point to the server you are running this on.
 ```sh
-$ sudo certbot certonly --nginx -d <your-domain>
+$ sudo certbot --nginx
+$ systemctl restart nginx
 ```
-
-### nginx 
-Create a new nginx config for keycloak in `/etc/nginx/sites-available/` with the content of the file `example.com.conf` in this repository.
-
-Do not forget to replace `<your-domain>` with your domain. :neutral_face:
-
-Check if you made any mistakes `nginx -t` and start nginx again `systemctl start nginx`.
-
-Nginx is now ready to proxy every request to your domain to port 8080 on your machine.
 
 ### docker-compose
 
