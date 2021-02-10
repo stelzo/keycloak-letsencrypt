@@ -24,16 +24,9 @@ If you don't have certbot yet, [install it](https://certbot.eff.org/).
 
 Get your certificate.
 For this to work, your domain needs to point to the server you are running this on.
-If you already have nginx, stop it (`systemctl stop nginx` for me). I know there are flags for nginx, do as you like.  
 ```sh
-$ sudo certbot certonly --standalone --preferred-challenges http -d <your-domain>
+$ sudo certbot certonly --nginx -d <your-domain>
 ```
-
-For renewals you can open `/etc/letsencrypt/renewal/<yourdomain>.conf` and add a custom command to be executed when the certbot updated your certifcates.
-```sh
-renew_hook = nginx -s reload
-```
-If you like to restart your keycloak server, this would be `docker-compose -f /opt/security/docker-compose.yml restart keycloak`.
 
 ### nginx 
 Create a new nginx config for keycloak in `/etc/nginx/sites-available/` with the content of the file `example.com.conf` in this repository.
@@ -55,6 +48,8 @@ Take a look into the `docker-compose.yml`.
 You are ready to go! Visit `https://yourdomain.com/`.
 
 If you want to import a realm on startup, you can mount your realm.json somewhere and set the path (in the container) with environment `KEYCLOAK_IMPORT=<your-realm-path>.json`. Then add `-Dkeycloak.profile.feature.upload_scripts=enabled` to the commands.
+
+You can restart your Keycloak server with `docker-compose -f /opt/security/docker-compose.yml restart keycloak`.
 
 ### management account
 
