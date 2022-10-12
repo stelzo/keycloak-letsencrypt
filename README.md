@@ -1,27 +1,26 @@
-# Keycloak with Let’s Encrypt :closed_lock_with_key:
+# Keycloak Let’s Encrypt :closed_lock_with_key:
 
-Maybe it's just me, but I think the current effort to get Keycloak running with renewing Let’s Encrypt certificates is too ... keystores.
+The current effort to get Keycloak running with renewing Let’s Encrypt certificates is too ... keystores for me.
 
-This will just use plain fullchain.pem and privkey.pem. Maybe not the right thing for big businesses but sufficient for many others.
+This repo will just use Let's Encrypt. Maybe not the right thing for big businesses but sufficient for many others.
 
-The plan is to use nginx for https and proxy to the http Keycloak server. Keycloak wants some stuff to be over https so we will give him nginx as a socket proxy.
+We will use nginx for https and proxy to the http Keycloak server. Keycloak wants some stuff to be over https so we will give it nginx as a socket proxy.
 
 You need
+
 - docker-compose
 - certbot
 - nginx
 
-This is basically a dockerized version of [this article](https://www.datamate.org/installation-keycloak-sso-ubuntu-18-04/). Many thanks to Christoph Dyllick-Brenzinger!
-
 ## Setup
-Clone this repo :neutral_face:
+
 ```sh
 $ git clone https://github.com/stelzo/keycloak-letsencrypt.git
 ```
 
 ### nginx
 
-Create a new nginx config for keycloak in `/etc/nginx/sites-available/<your-domain>.conf` with the following content.
+Create a new config for keycloak in `/etc/nginx/sites-available/<your-domain>.conf` with the following content.
 
 ```
 server {
@@ -43,28 +42,29 @@ server {
 ```
 
 Symlink your config to the enabled sites.
+
 ```sh
 $ sudo ln -s /etc/nginx/sites-available/<your-domain>.conf /etc/nginx/sites-enabled/<your-domain>.conf
 ```
 
-Check if you made any mistakes with `nginx -t` and restart `sudo service nginx restart`.
+Check if you made any mistakes with `sudo nginx -t` and restart `sudo nginx -s reload`.
 
 ### Let’s Encrypt/certbot
+
 If you don't have certbot yet, [install it](https://certbot.eff.org/).
 
 Get your certificate.
 For this to work, your domain needs to point to the server you are running this on.
+
 ```sh
 $ sudo certbot --nginx
 ```
 
-### docker-compose
+### docker-compose.yml
 
-Take a look into the `docker-compose.yml`.
-1. Change the postgres-data volume if you want to persist the data to somewhere else and... pick a safe password!
+1. _Change the passwords_!
 2. Create your admin account with `KEYCLOAK_USER` and `KEYCLOAK_PASSWORD` environment variables.
-3. Mount the `standalone.xml` from this repository by changing the first path (host path) `/opt/security/standalone.xml`.
-4. Start the container. `docker-compose up -d`.
+3. Start the containers. `docker-compose up -d`.
 
 You are ready to go! Visit `https://<your-domain>/`.
 
@@ -75,18 +75,23 @@ You can restart your Keycloak server with `docker-compose -f /path/to/docker-com
 The WildFly (Application Server Keycloak runs on) management console does not currently work with the nginx proxy (as seen in the article) but it starts on port 9990 on your machine if you need it. It is only http though.
 
 Add an account.
+
 ```sh
 $ docker exec keycloak /opt/jboss/keycloak/bin/add-user.sh -u <username> -p <password> -cw
 ```
 
 Reload the server inside the container.
+
 ```sh
 $ docker exec keycloak /opt/jboss/keycloak/bin/jboss-cli.sh --connect --command=reload
 ```
 
 You can reach it at `http://yourdomain.com:9990/management`.
 
-## License
-Author: Christopher Sieh <stelzo@steado.de>
+## Credit
 
-This project is licensed under the MIT License.
+This is basically a dockerized version of [this article](https://www.datamate.org/installation-keycloak-sso-ubuntu-18-04/). Many thanks to Christoph Dyllick-Brenzinger!
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
