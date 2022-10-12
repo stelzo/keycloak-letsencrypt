@@ -4,23 +4,25 @@ The current effort to get Keycloak running with renewing Let’s Encrypt certifi
 
 This repo will just use Let's Encrypt. Maybe not the right thing for big businesses but sufficient for many others.
 
-We will use nginx for https and proxy to the http Keycloak server. Keycloak wants some stuff to be over https so we will give it nginx as a socket proxy.
+## tldr
 
-You need
+Use the patched docker image `stelzo/keycloak:latest` or build it yourself with `Dockerfile` in this repo.
 
-- docker-compose
-- certbot
-- nginx
+## detailed setup guide
 
-## Setup
+You need to have installed:
+
+- [docker-compose](https://docs.docker.com/compose/install/)
+- [Certbot](https://certbot.eff.org/)
+- [Nginx](https://www.nginx.com/resources/wiki/start/topics/tutorials/install/)
+
+Then start with cloning the repo.
 
 ```sh
 $ git clone https://github.com/stelzo/keycloak-letsencrypt.git
 ```
 
-### nginx
-
-Create a new config for keycloak in `/etc/nginx/sites-available/<your-domain>.conf` with the following content.
+Create a new Nginx config for Keycloak in `/etc/nginx/sites-available/<your-domain>.conf` with the following content.
 
 ```
 server {
@@ -41,36 +43,32 @@ server {
 }
 ```
 
-Symlink your config to the enabled sites.
+Create a symlink from your config to the enabled sites.
 
 ```sh
 $ sudo ln -s /etc/nginx/sites-available/<your-domain>.conf /etc/nginx/sites-enabled/<your-domain>.conf
 ```
 
-Check if you made any mistakes with `sudo nginx -t` and restart `sudo nginx -s reload`.
+Check if you made any mistakes with `sudo nginx -t` and let Nginx load the new config `sudo nginx -s reload`.
 
-### Let’s Encrypt/certbot
-
-If you don't have certbot yet, [install it](https://certbot.eff.org/).
-
-Get your certificate.
+Get your SSL certificate.
 For this to work, your domain needs to point to the server you are running this on.
 
 ```sh
 $ sudo certbot --nginx
 ```
 
-### docker-compose.yml
+Now take a look into the `docker-compose.yml`.
 
-1. _Change the passwords_!
+1. **Change the passwords**!
 2. Create your admin account with `KEYCLOAK_USER` and `KEYCLOAK_PASSWORD` environment variables.
 3. Start the containers. `docker-compose up -d`.
 
-You are ready to go! Visit `https://<your-domain>/`.
+**You are ready to go!** Visit `https://<your-domain>/`.
 
 You can restart your Keycloak server with `docker-compose -f /path/to/docker-compose.yml restart keycloak`.
 
-### Management Console
+## Management Console
 
 The WildFly (Application Server Keycloak runs on) management console does not currently work with the nginx proxy (as seen in the article) but it starts on port 9990 on your machine if you need it. It is only http though.
 
